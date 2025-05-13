@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <link rel="icon" href="./favicon.ico" />
+        <meta charset="utf-8" />
+        <title><%=title%></title>
+        <meta
+            name="viewport"
+            content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="full-screen" content="yes" />
+        <meta name="screen-orientation" content="portrait" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta name="360-fullscreen" content="true" />
+        <meta name="renderer" content="webkit" />
+        <meta name="force-rendering" content="webkit" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+        <link rel="stylesheet" type="text/css" href="./index.css" />
+    </head>
+    <body style="overflow: hidden;">
+    
+      <!-- Firebase App (the core Firebase SDK) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYtDp520bXNX_KYiyA3slprfhaLHI0Hf8",
+      authDomain: "highscoreboard-92d23.firebaseapp.com",
+      projectId: "highscoreboard-92d23",
+      storageBucket: "highscoreboard-92d23.appspot.com",
+      messagingSenderId: "273842655972",
+      appId: "1:273842655972:web:5d8ff74de2049f0d97d2f1",
+      measurementId: "G-DS7M6DXYC7"
+  };
+
+   // Initialize Firebase
+   const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Make Firebase available globally
+  window.firebase = { app, db, auth, signInAnonymously , collection , addDoc};
+  </script>
+
+      
+
+        <%- include(cocosToolBar, {config: config}) %>
+        <div id="content" class="content" style="overflow: hidden;">
+            <div class="contentWrap">
+                <div id="GameDiv" class="wrapper">
+                    <div id="Cocos3dGameContainer">
+                        <canvas id="GameCanvas" tabindex="-1" style="background-color: '';"></canvas>
+                    </div>
+                    <div id="splash">
+                        <div class="progress-bar stripes"><span></span></div>
+                    </div>
+                    <div id="bulletin">
+                        <div id="sceneIsEmpty" class="inner"><%=tip_sceneIsEmpty%></div>
+                    </div>
+                    <div class="error" id="error">
+                        <div class="title">Error <i>(Please open the console to see detailed errors)</i></div>
+                        <div class="error-main"></div>
+                        <div class="error-stack"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include(cocosTemplate, {}) %>
+    </body>
+</html>

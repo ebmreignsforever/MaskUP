@@ -1,0 +1,27 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "width": 1080,
+      "height": 1920,
+      "fitHeight": true,
+      "fitWidth": true
+    },
+    "highQuality": true
+  },
+  "layer": [
+    {
+      "name": "Grounded",
+      "value": 1
+    },
+    {
+      "name": "UI",
+      "value": 2
+    },
+    {
+      "name": "RenderTexture",
+      "value": 4
+    }
+  ],
+  "custom_joint_texture_layouts": []
+}

@@ -1,0 +1,36 @@
+{
+  "ver": "1.0.1",
+  "importer": "label-atlas",
+  "imported": true,
+  "uuid": "fbd64d7d-3664-4ae7-9c28-bc2587317dfe",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "itemWidth": 2,
+    "itemHeight": 2,
+    "fontSize": 1.76,
+    "startChar": "",
+    "spriteFrameUuid": "571a112d-0115-45c5-a311-69e2163d012c@f9941",
+    "_fntConfig": {
+      "commonHeight": 2,
+      "fontSize": 1,
+      "atlasName": "white",
+      "fontDefDictionary": {
+        "NaN": {
+          "rect": {
+            "x": 30,
+            "y": 30,
+            "width": 2,
+            "height": 2
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 2
+        }
+      },
+      "kerningDict": {}
+    }
+  }
+}

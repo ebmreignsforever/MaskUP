@@ -1,0 +1,81 @@
+// Effect Syntax Guide: https://docs.cocos.com/creator/manual/zh/shader/index.html
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: unlit-vs:vert # builtin header
+      frag: unlit-fs:frag
+      depthStencilState:
+        depthTest: false
+        depthWrite: false
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+        rasterizerState:
+          cullMode: none
+      properties: 
+        useEffect: { value: 0, editor: { type: number, min: 0, max: 1, step: 1 } }
+}%
+
+CCProgram unlit-vs %{
+  
+#include <builtin/uniforms/cc-global>
+//#include <cc-global>
+precision highp float;
+
+  in vec3 a_position;
+  in vec2 a_texCoord;
+  in vec4 a_color;
+
+  out vec2 v_uv;
+  out vec3 v_position;
+  out vec4 v_color;
+
+
+
+ vec4 vert () {
+    vec4 pos = vec4(a_position, 1);
+     pos = cc_matViewProj * pos;
+
+    v_uv = a_texCoord;
+    v_position = a_position;
+
+    v_color = a_color;
+    return pos;
+  }
+ 
+}%
+
+CCProgram unlit-fs %{
+  precision highp float;
+  #include <legacy/output>
+  #include <legacy/fog-fs>
+
+  in vec2 v_uv;
+  in vec3 v_position;
+  in vec4 v_color;
+
+  #pragma builtin(local)
+  layout(set = 2, binding = 11) uniform sampler2D cc_spriteTexture;
+
+
+  uniform EffectToggle {
+    float useEffect;
+  };  
+
+  vec4 frag () {
+    vec4 col = vec4(0,0,0,0);
+    if(useEffect<0.99)
+    {
+      vec4 applyWhiteColor = vec4(v_color.xyz,0) + texture(cc_spriteTexture, v_uv);  
+       col = v_color * applyWhiteColor;  
+    }
+    else
+    {
+       col =  v_color *  texture(cc_spriteTexture, v_uv);
+    }
+    return CCFragOutput(col);
+  }
+}%

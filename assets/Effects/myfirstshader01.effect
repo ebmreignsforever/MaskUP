@@ -1,0 +1,65 @@
+// Effect Syntax Guide: https://docs.cocos.com/creator/manual/zh/shader/index.html
+// 2-24-25
+
+
+CCEffect %{
+  techniques:
+  - name: tech0
+    passes:
+    - vert: legacy/main-functions/general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      properties: &props
+        mainColor:      { value: [1, 1, 1, 1], editor: { type: color } }
+  
+
+  - name: MyFirstShaderTech
+    passes:
+    - vert: general-vs:vert # builtin header
+      frag: unlit-fs:frag
+      blendState:
+        targets:
+        - blend: true
+          blendSrc: src_alpha
+          blendDst: one_minus_src_alpha
+          blendSrcAlpha: src_alpha
+          blendDstAlpha: one
+      properties: *props
+}%
+
+CCProgram vert %{
+  // glsl syntax to want high precision float. Not the same as unity LOD
+
+  #include </builtin/uniform/cc-global>
+  #include </builtin/uniform/cc-local>
+
+  precision highp float;
+  in vec4 a_position;
+  in vec2 a_texCoord;
+
+  out vec4 v_pos;
+  out vec2 v_uv;
+
+  // rmbr, it is already in world position by default. Usually, IDK which setting make it local position
+  v_pos = a_position * cc_matViewProj;
+  v_uv = a_texCoord;
+
+  return v_pos;
+}%
+
+
+CCProgram unlit-fs %{
+  // glsl syntax to want high precision float. Not the same as unity LOD
+  precision highp float;
+
+
+  in vec2 v_uv;
+
+  uniform Constant {
+    vec4 mainColor;
+  };
+
+  vec4 frag () {
+    vec4 col = vec4(1. - v_uv.x, v_uv.y, 0., 1.);
+    return col * mainColor;
+  }
+}%
