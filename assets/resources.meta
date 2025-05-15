@@ -24,13 +24,24 @@
       },
       {
         "range": "include",
+        "type": "url",
+        "patchOption": {
+          "patchType": "glob",
+          "value": "db://assets/**/*"
+        },
+        "assets": [
+          ""
+        ]
+      },
+      {
+        "range": "include",
         "type": "asset",
         "patchOption": {
           "patchType": "glob",
           "value": "db://assets/resources/**/*"
         },
         "assets": [
-          "ae8db86d-0b08-4e6a-975f-e3fe635bfd69"
+          ""
         ]
       }
     ]

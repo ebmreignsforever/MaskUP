@@ -12,7 +12,8 @@
   "_defines": [
     {
       "ONE_MINUS_FLIPY": true,
-      "CAMERA_TEXURE": true
+      "CAMERA_TEXURE": true,
+      "GRAY_SCALE": true
     }
   ],
   "_states": [

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node ,CCFloat, BoxCollider2D ,input, Input, RigidBody2D , Vec2, Collider2D,PhysicsSystem2D, pingPong, Vec3, EventMouse ,Camera, clamp, macro, EventTouch, Material,view} from 'cc';
+import { _decorator, Component, Node ,CCFloat, BoxCollider2D ,input, Input, RigidBody2D , Vec2, Collider2D,PhysicsSystem2D, pingPong, Vec3, EventMouse ,Camera, clamp, macro, EventTouch, Material,view ,screen, size, Screen} from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerScript')
@@ -49,7 +49,7 @@ private Shockwave: Material = null;
 
 @property(Vec2)
 private waveOffset:Vec2 = new Vec2(0,0);
-
+private screen:Vec2 = new Vec2(1080,1920);
 ///
 private currentPlayerState:PlayerStates = PlayerStates.OnBounce;
 public rb:RigidBody2D = new RigidBody2D();
@@ -60,8 +60,8 @@ private oneTimeClick:boolean = false;
 private oneClickOffsetf:Vec3 = new Vec3(0,0,0);
 private magnitudeOffset:number = 0;
 private  out = new Vec3();
-
-
+private waveNum:number=0;
+public onShockwave:boolean = false;
     protected onLoad(): void {
         
     }
@@ -75,8 +75,11 @@ private  out = new Vec3();
         input.on(Input.EventType.MOUSE_MOVE, this.onMouseMove, this);
         input.on(Input.EventType.TOUCH_MOVE , this.onTouchMove, this);
         this.captureGroundOffsetY = this.node.position.y
+        //view.enableRetina(false);
+        view.setDesignResolutionSize(1080, 1920, view.getResolutionPolicy());
 
-      
+         screen.on('window-resize', this.onWindowResize, this);
+        this.screen = new Vec2(screen.windowSize.width,screen.windowSize.height);
 
        // this.node.position = new Vec3(this.node.position.x,-768.01,0);
 
@@ -91,12 +94,12 @@ private  out = new Vec3();
         if(this.Shockwave)
         {
             let playerPos = new Vec3(this.node.worldPosition.x,this.node.worldPosition.y- this.waveOffset.y);
-            let screen:Vec2 = new Vec2(view.getVisibleSize().width ,view.getVisibleSize().height );
-            this.textureCamera.worldToScreen(this.node.worldPosition,playerPos)
-            let screenPos = new Vec2((playerPos.x / screen.x),(playerPos.y / screen.y));
+            this.mainCamera.worldToScreen(this.node.worldPosition,playerPos)
+            //his.mainCamera.screenScale
+            let screenPos = new Vec2(((playerPos.x / this.screen.x) ),((playerPos.y / this.screen.y)));
             this.Shockwave.setProperty('center',screenPos);
-            //console.log("Material Property : "+this.Shockwave.getProperty('center'));
-            this.playShockwave(3,2,0.5,deltaTime);
+            console.log("Screen RES X:Y =  "+this.screen.x +" : "+ this.screen.y);
+           this.playShockwave(0.03,deltaTime);
         }
     }
 
@@ -204,6 +207,12 @@ private  out = new Vec3();
     //#endregion
 
 
+      onWindowResize(width: number, height: number)
+       {
+            console.log("Window resized:", width, height);
+            this.screen = new Vec2(width,height);
+       }
+
     
     checkForGround():boolean {
         let result = false;
@@ -224,30 +233,24 @@ private  out = new Vec3();
        return result;
     }
 
-    playShockwave(delay: number, duration: number, targetSize: number ,deltaTime:number) {
+    playShockwave( speedWave: number, fadeWave:number) {
         if (!this.Shockwave) return;
-    
-        let elapsed = -delay;
-    
-        const updateShockwave = () => {
-            elapsed += deltaTime;
-    
-            if (elapsed < 0) return;
-    
-            if (elapsed > duration) {
-                this.Shockwave.setProperty('shockwaveSize', 0);
-                this.Shockwave.setProperty('shockwaveSharpness', 0.1);
-                this.unschedule(updateShockwave);
-                return;
-            }
-    
-            const t = elapsed / duration;
-            const size = targetSize * t;
-            this.Shockwave.setProperty('shockwaveSize', size);
-            this.Shockwave.setProperty('shockwaveSharpness', size*2);
-        };
-    
-        this.schedule(updateShockwave, 0);
+        
+       if(this.onShockwave){
+       this.waveNum+=speedWave;
+        //console.log(this.waveNum);
+        this.Shockwave.setProperty('shockwaveSize' ,this.waveNum);
+        this.Shockwave.setProperty('shockwaveSharpness' ,this.waveNum*2);
+
+        if(this.waveNum > 1)
+        {
+            this.Shockwave.setProperty('shockwaveSize' , 0);
+            this.waveNum = 0;
+            this.Shockwave.setProperty('shockwaveSharpness',0.2)
+            this.onShockwave =false;
+        }
+
+     }
     }
     
   

@@ -70,7 +70,11 @@ export class  GameManger extends Component {
     @property(ParticleSystem2D)
     private death:ParticleSystem2D;
 
+    @property(Node)
+    private EndEffect:Node;
 
+    @property(Node)
+    private EndWave:Node;
     //player Data
     private score:number = 0;
 
@@ -114,7 +118,7 @@ export class  GameManger extends Component {
         director.preloadScene("MainScene", function () {
             console.log('Next scene preloaded');
         });
-
+        this.EndWave.active = false;
 
     }
 
@@ -156,7 +160,8 @@ export class  GameManger extends Component {
             
         
             let rb = this.playerNode.getComponent(RigidBody2D);
-            rb.linearVelocity = new Vec2(rb.linearVelocity.x, math.clamp(rb.linearVelocity.y+this.increaseForce,0,70));
+            rb.linearVelocity = new Vec2(rb.linearVelocity.x, math.clamp(rb.linearVelocity.y+this.increaseForce,0,80));
+            this.playerCollider.getComponent(PlayerScript).onShockwave = true;
         }
 
         if(otherCollider.node.name =="Ground")
@@ -190,6 +195,13 @@ export class  GameManger extends Component {
             this.playerNode.getComponent(BoxCollider2D).enabled = false;
             this.playerNode.getComponent(RigidBody2D).enabled = false;
             this.repaly.active = true;
+
+
+           
+            this.EndWave.active = true;
+            this.EndEffect.active = true;
+            this.EndEffect.getComponent(Animation).play('EndEffect');
+           // this.node.getComponent(AudioSource).p
         }
      
     }
@@ -202,6 +214,8 @@ export class  GameManger extends Component {
         // this.CameraNode.worldPosition = new Vec3(0,0,0);
        //.linearVelocity = Vec2.ZERO;
         this.repaly.active = false;
+        this.EndWave.active = false;
+        this.EndEffect.active = false;
        // this.destroy();
         director.loadScene('MainScene' ,() => {
             //this.loadOnPlay(); // This runs AFTER the scene has fully loaded
@@ -221,7 +235,7 @@ export class  GameManger extends Component {
             this.playerCollider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
 
-      //  game.frameRate = 60;
+          game.frameRate = 60;
       //  this.node.getComponent(AudioSource).play();
        
     }
